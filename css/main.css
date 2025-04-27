@@ -17,6 +17,11 @@ li {
   list-style: none;
 }
 
+.order-modal-image {
+  width: 10px;
+  height: auto;
+}
+
 body {
   background-color: var(--fantasy);
   padding-bottom: 24px;
@@ -266,8 +271,7 @@ body {
 }
 
 .order-detail-product-image {
-  grid-area: product-image;
-  width: 100%;
+  width: 20%;
   height: auto;
   object-fit: cover;
   border-radius: 4px;

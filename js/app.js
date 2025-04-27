@@ -37,6 +37,19 @@ function addmoreless(count, cardpizzaElement, spanAdd, nom, prix, id) {
     mettreAJourPanier();
   });
 
+  function resetBasketToEmpty() {
+    basketaside.innerHTML = `
+      <h2>Votre panier</h2>
+      <div class="empty-basket">
+        <img src="../images/pizza.png" alt="panier vide" class="empty-basket-img" />
+        <p>Votre panier est vide</p>
+      </div>
+    `;
+    prixTotal = 0;
+    totalArticles = 0;
+    addmoreless((count.textContent = 0));
+  }
+
   moins.addEventListener("click", () => {
     let currentCount = parseInt(addcard.dataset.count);
     if (currentCount > 0) {
@@ -185,6 +198,10 @@ function mettreAJourPanier() {
   confirmBtn.href = "#";
   confirmBtn.textContent = "Confirmer la commande";
 
+  confirmBtn.addEventListener("click", () => {
+    afficherOrderModal();
+  });
+
   basketContent.appendChild(totalOrder);
   basketContent.appendChild(deliveryInfo);
   basketContent.appendChild(confirmBtn);
@@ -202,6 +219,188 @@ function resetBasketToEmpty() {
   `;
   prixTotal = 0;
   totalArticles = 0;
+}
+
+function afficherOrderModal() {
+  const orderModalwrapper = document.createElement("div");
+  orderModalwrapper.classList.add("order-modal-wrapper");
+  const orderModal = document.createElement("div");
+  orderModal.classList.add("order-modal");
+  const orderModalImage = document.createElement("img");
+  orderModalImage.src = "../images/carbon_checkmark-outline.svg";
+  orderModalImage.alt = "checkmark";
+  const orderModalTitle = document.createElement("p");
+  orderModalTitle.classList.add("order-modal-title");
+  orderModalTitle.textContent = "Order Confirmed";
+  orderModalTitle.classList.add("order-modal-title");
+  const orderModalText = document.createElement("p");
+  orderModalText.classList.add("order-modal-subtitle");
+  orderModalText.textContent = "We hope you enjoy your food!";
+  const ul = document.createElement("ul");
+  ul.classList.add("order-details");
+
+  const allAddedItems = document.querySelectorAll(".add-to-cart-btn-after");
+  for (let i = 0; i < allAddedItems.length; i++) {
+    const item = allAddedItems[i];
+    const id = item.dataset.id;
+    const nom = item.dataset.nom;
+    const prixString = item.dataset.prix;
+    const count = parseInt(item.dataset.count);
+
+    if (count > 0) {
+      const pizzaItem = document.querySelector(`.pizza-item[data-id="${id}"]`);
+      const imgpizza = pizzaItem.querySelector(".pizza-picture").src;
+      const prixUnitaire = parseFloat(prixString.replace(" €", ""));
+      const prixPourCettePizza = prixUnitaire * count;
+
+      const li = document.createElement("li");
+
+      const imagepizza = document.createElement("img");
+      imagepizza.classList.add("order-detail-product-image");
+      imagepizza.src = imgpizza;
+      imagepizza.alt = nom;
+      li.appendChild(imagepizza);
+
+      const spanname = document.createElement("span");
+      spanname.classList.add("order-detail-product-name");
+      spanname.textContent = nom;
+      li.appendChild(spanname);
+
+      const spanquantity = document.createElement("span");
+      spanquantity.classList.add("order-detail-product-quantity");
+      spanquantity.textContent = `${count}x`;
+      li.appendChild(spanquantity);
+
+      const spanprice = document.createElement("span");
+      spanprice.classList.add("order-detail-product-unit-price");
+      spanprice.textContent = `@ ${prixUnitaire.toFixed(2)} €`;
+      li.appendChild(spanprice);
+
+      const spanpriceall = document.createElement("span");
+      spanpriceall.classList.add("order-detail-product-total-price");
+      spanpriceall.textContent = `${prixPourCettePizza.toFixed(2)} €`;
+      li.appendChild(spanpriceall);
+
+      ul.appendChild(li);
+    }
+  }
+
+  const li2 = document.createElement("li");
+  li2.classList.add("order-detail-total-price");
+  const spanTotalText = document.createElement("span");
+  spanTotalText.classList.add("total-order-title");
+  spanTotalText.textContent = "Order total";
+  li2.appendChild(spanTotalText);
+  const spanTotalPrice = document.createElement("span");
+  spanTotalPrice.classList.add("total-order-price");
+  spanTotalPrice.textContent = `${prixTotal.toFixed(2)} €`;
+  li2.appendChild(spanTotalPrice);
+
+  ul.appendChild(li2);
+
+  const a = document.createElement("a");
+  a.classList.add("new-order-btn");
+  a.href = "#";
+  a.textContent = "Start new order";
+
+  a.addEventListener("click", () => {
+    orderModalwrapper.remove();
+
+    const allPizzaItems = document.querySelectorAll(".pizza-item");
+    for (let i = 0; i < allPizzaItems.length; i++) {
+      const pizzaItem = allPizzaItems[i];
+      const btnAfter = pizzaItem.querySelector(".add-to-cart-btn-after");
+      if (btnAfter) {
+        btnAfter.remove();
+      }
+
+      const addBtn = pizzaItem.querySelector(".add-to-cart-btn");
+      if (addBtn) {
+        addBtn.style.display = "flex";
+      }
+    }
+
+    resetBasketToEmpty();
+  });
+
+  document.body.appendChild(orderModalwrapper);
+  orderModalwrapper.appendChild(orderModal);
+  orderModal.appendChild(orderModalImage);
+  orderModal.appendChild(orderModalTitle);
+  orderModal.appendChild(orderModalText);
+  orderModal.appendChild(ul);
+  orderModal.appendChild(a);
+}
+
+function ordermodal(img, nome, number, priceone, priceallone, priceall) {
+  const orderModalwrapper = document.createElement("div");
+  orderModalwrapper.classList.add("order-modal-wrapper");
+  const orderModal = document.createElement("div");
+  orderModal.classList.add("order-modal");
+  const orderModalImage = document.createElement("img");
+  orderModalImage.src = "../images/carbon_checkmark-outline.svg";
+  orderModalImage.alt = "checkmark";
+  const orderModalTitle = document.createElement("p");
+  orderModalTitle.classList.add("order-modal-title");
+  orderModalTitle.textContent = "Order Confirmed";
+  orderModalTitle.classList.add("order-modal-title");
+  const orderModalText = document.createElement("p");
+  orderModalText.classList.add("order-modal-subtitle");
+  orderModalText.textContent = "We hope you enjoy your food!";
+  const ul = document.createElement("ul");
+  ul.classList.add("order-details");
+  const li1 = document.createElement("li");
+  const imagepizza = document.createElement("img");
+  imagepizza.classList.add("order-detail-product-image");
+  imagepizza.src = img;
+  imagepizza.alt = nome;
+  li1.appendChild(imagepizza);
+  const spanname = document.createElement("span");
+  spanname.classList.add("order-detail-product-name");
+  spanname.textContent = nome;
+  li1.appendChild(spanname);
+  const spanquantity = document.createElement("span");
+  spanquantity.classList.add("order-detail-product-quantity");
+  spanquantity.textContent = `${number}x`;
+  li1.appendChild(spanquantity);
+  const spanprice = document.createElement("span");
+  spanprice.classList.add("order-detail-product-unit-price");
+  spanprice.textContent = `@ ${priceone}`;
+  li1.appendChild(spanprice);
+  const spanpriceall = document.createElement("span");
+  spanpriceall.classList.add("order-detail-product-total-price");
+  spanpriceall.textContent = `$${priceallone}`;
+  li1.appendChild(spanpriceall);
+  ul.appendChild(li1);
+  const li2 = document.createElement("li");
+  li2.classList.add("order-detail-total-price");
+  const spanTotalText = document.createElement("span");
+  spanTotalText.classList.add("total-order-title");
+  spanTotalText.textContent = "Order total";
+  li2.appendChild(spanTotalText);
+  const spanTotalPrice = document.createElement("span");
+  spanTotalPrice.classList.add("total-order-price");
+  spanTotalPrice.textContent = `$${priceall}`;
+  li2.appendChild(spanTotalPrice);
+  const a = document.createElement("a");
+  a.classList.add("new-order-btn");
+  a.href = "#";
+  a.textContent = "Start new order";
+
+  a.addEventListener("click", () => {
+    orderModalwrapper.remove();
+    resetBasketToEmpty();
+  });
+
+  document.body.appendChild(orderModalwrapper);
+  orderModalwrapper.appendChild(orderModal);
+  orderModal.appendChild(orderModalImage);
+  orderModal.appendChild(orderModalTitle);
+  orderModal.appendChild(orderModalText);
+  orderModal.appendChild(ul);
+  ul.appendChild(li1);
+  ul.appendChild(li2);
+  orderModal.appendChild(a);
 }
 
 function cardpizza(img, id, price, nom) {
